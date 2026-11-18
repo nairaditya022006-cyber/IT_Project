@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - TaskFlow{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <h2>Dashboard</h2>
+    <a href="{{ url_for('add_task') }}" class="btn btn-primary">➕ New Task</a>
+</div>
+
+<!-- Stats Row -->
+<div class="stats-container">
+    <div class="stat-card">
+        <h3>{{ stats.total }}</h3>
+        <p>Total Tasks</p>
+    </div>
+    <div class="stat-card text-warning">
+        <h3>{{ stats.pending }}</h3>
+        <p>Pending</p>
+    </div>
+    <div class="stat-card text-success">
+        <h3>{{ stats.completed }}</h3>
+        <p>Completed</p>
+    </div>
+    <div class="stat-card text-danger">
+        <h3>{{ stats.overdue }}</h3>
+        <p>Overdue</p>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <!-- Today's Tasks -->
+    <div class="dashboard-column">
+        <h3>Today's Tasks</h3>
+        {% if tasks_today %}
+            {% for task in tasks_today %}
+                <div class="card task-card priority-{{ task.priority|lower }}">
+                    <div class="task-header">
+                        <h4>{{ task.title }}</h4>
+                        <span class="badge badge-{{ task.priority|lower }}">{{ task.priority }}</span>
+                    </div>
+                    <p class="task-desc">{{ task.description or 'No description' }}</p>
+                    <div class="task-actions">
+                        <a href="{{ url_for('complete_task', id=task.id) }}" class="btn btn-sm btn-success">✓ Complete</a>
+                        <a href="{{ url_for('edit_task', id=task.id) }}" class="btn btn-sm btn-secondary">✏️ Edit</a>
+                        <a href="{{ url_for('delete_task', id=task.id) }}" class="btn btn-sm btn-danger" onclick="return confirmDelete()">🗑️</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">No tasks due today. Enjoy your day!</p>
+        {% endif %}
+    </div>
+
+    <!-- Upcoming Tasks -->
+    <div class="dashboard-column">
+        <h3>Upcoming Tasks</h3>
+        {% if tasks_upcoming %}
+            {% for task in tasks_upcoming %}
+                <div class="card task-card priority-{{ task.priority|lower }}">
+                    <div class="task-header">
+                        <h4>{{ task.title }}</h4>
+                        <span class="badge badge-{{ task.priority|lower }}">{{ task.priority }}</span>
+                    </div>
+                    <p class="text-muted small">Due: {{ task.due_date.strftime('%b %d, %Y') }}</p>
+                    <p class="task-desc">{{ task.description or 'No description' }}</p>
+                    <div class="task-actions">
+                        <a href="{{ url_for('complete_task', id=task.id) }}" class="btn btn-sm btn-success">✓</a>
+                        <a href="{{ url_for('edit_task', id=task.id) }}" class="btn btn-sm btn-secondary">✏️</a>
+                        <a href="{{ url_for('delete_task', id=task.id) }}" class="btn btn-sm btn-danger" onclick="return confirmDelete()">🗑️</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-muted">No upcoming tasks.</p>
+        {% endif %}
+    </div>
+
+    <!-- Recent Tasks List -->
+    <div class="dashboard-column">
+        <h3>Recently Added</h3>
+        <ul class="recent-list">
+            {% for task in recent_tasks %}
+                <li class="recent-item">
+                    <span class="recent-title {{ 'text-strike' if task.status == 'Completed' else '' }}">{{ task.title }}</span>
+                    <span class="recent-status badge {% if task.status == 'Completed' %}badge-success{% else %}badge-warning{% endif %}">
+                        {{ task.status }}
+                    </span>
+                </li>
+            {% else %}
+                <li class="text-muted">No tasks added yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}

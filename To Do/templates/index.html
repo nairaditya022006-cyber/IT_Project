@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}TaskFlow - Smart To-Do List{% endblock %}
+
+{% block content %}
+<div class="hero-section text-center">
+    <h1>Welcome to TaskFlow</h1>
+    <p class="subtitle">Your smart and simple task management solution.</p>
+    
+    <div class="hero-features">
+        <div class="feature-card">
+            <h3>Organize Your Life</h3>
+            <p>Keep track of what you need to do, when you need to do it.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Boost Productivity</h3>
+            <p>Prioritize your tasks and never miss a deadline.</p>
+        </div>
+        <div class="feature-card">
+            <h3>Anywhere, Anytime</h3>
+            <p>Access your tasks on the go with our responsive web design.</p>
+        </div>
+    </div>
+
+    <div class="hero-cta mt-4">
+        <a href="{{ url_for('register') }}" class="btn btn-primary btn-large">Get Started Now</a>
+        <p class="mt-2">Already have an account? <a href="{{ url_for('login') }}">Log in here</a></p>
+    </div>
+</div>
+{% endblock %}
